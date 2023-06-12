@@ -1,0 +1,266 @@
+@using prjBookMvcCore.Models
+@model MenuInformation
+@{
+    BookShopContext db = new BookShopContext();
+    var selectedFilter = "PublicationDate";
+}
+
+<html>
+<head>
+    @if (Model?.categoryId == 0 && Model.subcategoryId == 0)
+    {
+        ViewData["Title"] = $"{ViewData["Title"]}   {"繁中"}";
+    }
+    else if (Model.subcategoryId > 0 && !string.IsNullOrEmpty(Model?.subCategories?.FirstOrDefault(c => c.SubCategoryId == Model.subcategoryId)?.SubCategoryName))
+    {
+        var subcategoryName = Model.subCategories.FirstOrDefault(c => c.SubCategoryId == Model.subcategoryId)?.SubCategoryName;
+        if (!string.IsNullOrEmpty(subcategoryName))
+        {
+            ViewData["Title"] = $"{ViewData["Title"]}   {subcategoryName}";
+        }
+    }
+    else if (Model?.categoryId > 0)
+    {
+        var categoryName = Model?.categories?.FirstOrDefault(c => c.CategoryId == Model.categoryId)?.CategoryName;
+        if (!string.IsNullOrEmpty(categoryName))
+        {
+            ViewData["Title"] = $"{ViewData["Title"]}   {categoryName}";
+        }
+    }
+
+
+    <style>
+        a:link, a:visited {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .bookCaption {
+            line-height: 1.5em; /* 設置行高為字體大小的1.5倍 */
+            height: 3em; /* 設置高度為字體大小的3倍 */
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .authorCaption {
+            line-height: 1.5em; /* 設置行高為字體大小的1.5倍 */
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .bookimg {
+            width: 85%;
+            margin-left: 25px;
+        }
+    </style>
+</head>
+<body>
+    @*頁面位置*@
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a class="linkaFormat" href="~/Home/Home">首頁</a></li>
+            <li class="breadcrumb-item"><a class="linkaFormat" href="~/Home/Menu">書籍</a></li>
+            <li class="breadcrumb-item"><a class="linkaFormat" href="@Url.Action("分類頁面", new { id = 0 })">繁中</a></li>
+            @if (Model?.categoryId > 0)
+            {
+                <li class="breadcrumb-item" aria-current=""><a class="linkaFormat" href="@Url.Action("分類頁面", new { id = Model.categoryId })">@Model?.categories?.FirstOrDefault(c => c.CategoryId == Model.categoryId)?.CategoryName</a></li>
+            }
+            @if (Model?.subcategoryId > 0 && !string.IsNullOrEmpty(Model?.subCategories?.FirstOrDefault(c => c.SubCategoryId == Model.subcategoryId)?.SubCategoryName))
+            {
+                <li class="breadcrumb-item active" aria-current="page"><a class="linkaFormat" href="@Url.Action("分類頁面", new { subid = Model.subcategoryId })">@Model.subCategories.FirstOrDefault(c => c.SubCategoryId == Model.subcategoryId)?.SubCategoryName</a></li>
+            }
+        </ol>
+    </nav>
+    <div class="container-fluid justify-content-center2" style="margin-top: 20px">
+        <div class="row">
+            @*左邊功能欄*@
+            <div class="col-2" style="position: relative;">
+                <div class="card" style="position: sticky; top: 20%;">
+                    @*分類選單*@
+                    <div class="card-header">
+                        @{
+                            var s = db.Books.Where(c => c.LanguageId == 1).Select(c => c.BookId).ToList();
+                            int countAll = s.Count;
+                            <div class="row"><a href="@Url.Action("分類頁面", new { id = 0 })">繁中 (@countAll)</a></div>
+                        }
+                    </div>
+                    @foreach (var category in Model.categories)
+                    {
+                        @if (category.CategoryId > 14)
+                        {
+                            var q = db.CategoryDetails.Where(c => c.SubCategory.CategoryId == category.CategoryId).Select(c => c).ToList();
+                            int count = q.Count;
+                            <div class="row card-body border-1 btn-outline-secondary" data-bs-toggle="collapse" href="#card-@category.CategoryId" role="button" aria-expanded="false" aria-controls="card-@category.CategoryId" onclick="changePath(@category.CategoryId)">
+
+                                    <a asp-controller="Category" asp-action="分類頁面" asp-route-id="@category.CategoryId">@category.CategoryName (@count)</a>
+
+                            </div>
+                            <div class="collapse @(Model.categoryId == category.CategoryId ? "show" : "")" id="card-@category.CategoryId">
+                                @{
+                                    var query = db.SubCategories.Where(c => c.CategoryId == category.CategoryId).Select(c => new { c.SubCategoryId, c.SubCategoryName }).ToList();
+                                    @foreach (var subcategory in query)
+                                    {
+                                        var subcategoryName = subcategory.SubCategoryName;
+                                        var su = db.CategoryDetails.Where(s => s.SubCategory.SubCategoryId == subcategory.SubCategoryId).Select(s => new { s.Book }).ToList();
+                                        int subcount = su.Count;
+                                        <div class="card card-body @(string.IsNullOrEmpty(subcategoryName) ? "d-none" : "") btn-outline-secondary" onclick="changePath(@subcategory.SubCategoryId)">
+                                            <a asp-controller="Category" asp-action="分類頁面" asp-route-subid="@subcategory.SubCategoryId">@subcategoryName (@subcount)</a>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+            @*右邊書籍欄*@
+            <div class="col">
+                @*排序欄*@
+                <div class="row">
+                    <div class="col">
+                        <div style="float:right">
+                            <span>排序方式</span>
+                            <div class="btn-group">
+                                <select id="sort-Select" class="form-select" aria-label="Default select example" onchange="booksview()">
+                                    <option value="PublicationDate" select="@((Model.SortBy == "PublicationDate").ToString().ToLower())">出版日期排序</option>
+                                    <option value="Price" select="@((Model.SortBy == "Price").ToString().ToLower())">優惠價排序</option>
+                                    <!-- Add more options for other sorting options, if needed -->
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                @*書籍顯示欄*@
+                <div class="row" id="booksview">
+                    @{
+                        foreach (var item in Model.menuItems)
+                        {
+                            <div class="col-3 card book-item border-0" data-publication-date="@item.book.PublicationDate.ToString("yyyy/MM/dd")" data-price="@((int)Math.Ceiling(item.book.UnitPrice * item.bookDiscount.BookDiscountAmount))">
+                                <div class="headshot">
+                                    <a href="~/Book/BookInformation/@item.book.BookId"><img class="bookimg" src="~/Image/Book/@item.book.CoverPath" data-bs-toggle="tooltip" data-bs-placement="top" title="@item.book.BookTitle.Split("$")[0]"/></a>
+                                </div>
+                                <div class="card-body">
+                                    <ul style="list-style:none; ">
+                                        <li> <a class="bookCaption mb-2" href="~/Book/BookInformation/@item.book.BookId">@item.book.BookTitle.Split("$")[0]</a></li>
+                                        <li class="prod_author authorCaption">
+                                            作者：
+                                            @if (item.author != null)
+                                            {
+                                                int aaaaa = item.author.AuthorId;
+                                                <a asp-controller="Book" asp-action="authorInformation" asp-route-id="@aaaaa">@item.author.AuthorName</a>
+                                            }
+                                        </li>
+                                        <li class="Price">原價：<del>@((int)item.book.UnitPrice)</del>元</li>
+                                        <li class="discPrice">
+                                            優惠價：<span style="color: #E3007F;">@((item.bookDiscount.BookDiscountAmount * 100).ToString("0"))</span>折
+                                            <span style="color: #E3007F;">@((int)Math.Ceiling(item.book.UnitPrice * item.bookDiscount.BookDiscountAmount))</span>元
+                                        </li>
+                                        <li class="publicationDate">
+                                            出版日期：<span>@item.book.PublicationDate.ToString("yyyy/MM/dd")</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                        }
+                    }
+
+                </div>
+                <!-- 分頁欄頁面控制 -->
+                <div class="row">
+                    <div class="col">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center">
+                                @if (Model.CurrentPage > 1)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="@Url.Action("分類頁面", new { id = Model.categoryId, subid = Model.subcategoryId, page = Model.CurrentPage - 1, sort = Model.SortBy })" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                            <span class="sr-only">前一頁</span>
+                                        </a>
+                                    </li>
+                                }
+                                @for (int i = 1; i <= Model.TotalPages; i++)
+                                {
+                                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                        <a class="page-link" href="@Url.Action("分類頁面", new { id = Model.categoryId, subid = Model.subcategoryId, page = i })">@i</a>
+                                    </li>
+                                }
+                                @if (Model.CurrentPage < Model.TotalPages)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="@Url.Action("分類頁面", new { id = Model.categoryId, subid = Model.subcategoryId, page = Model.CurrentPage + 1, sort = Model.SortBy })" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                            <span class="sr-only">下一頁</span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+<script>
+    // 排序判斷動作
+    function booksview() {
+        var sortBy = document.getElementById("sort-Select").value;
+        var categoryId = '@Model.categoryId';
+        var subcategoryId = '@Model.subcategoryId';
+        var currentPage = '@Model.CurrentPage';
+        window.location.href = '@Url.Action("分類頁面")' + '?id=' + categoryId + '&subid=' + subcategoryId + '&page=' + currentPage + '&sort=' + sortBy;
+    }
+
+    // 分類欄位 click 事件
+    function changePath(inputid) {
+        const path = '@Url.Action("分類頁面", new { id = "" })' + '/' + inputid;
+        window.location.href = path + '?sort=' + document.getElementById("sort-Select").value;
+
+        // Add the 'show' class to the corresponding card-body element
+        const cardBody = document.getElementById("card-" + inputid);
+        if (cardBody) {
+            cardBody.classList.add("show");
+        }
+
+        // Remove the 'show' class from other card-body elements
+        const cardBodies = document.getElementsByClassName("collapse");
+        for (let i = 0; i < cardBodies.length; i++) {
+            const body = cardBodies[i];
+            if (body.id !== "card-" + inputid) {
+                body.classList.remove("show");
+            }
+        }
+
+        // Modify the breadcrumb items
+        const breadcrumbItems = document.getElementsByClassName("breadcrumb-item");
+        for (let i = 0; i < breadcrumbItems.length; i++) {
+            const item = breadcrumbItems[i];
+            item.classList.remove("active");
+            item.removeAttribute("aria-current");
+        }
+
+        const selectedCategoryItem = document.getElementById("category-" + inputid);
+        if (selectedCategoryItem) {
+            selectedCategoryItem.classList.add("active");
+            selectedCategoryItem.setAttribute("aria-current", "page");
+        }
+
+        const selectedSubcategoryItem = document.getElementById("subcategory-" + inputid);
+        if (selectedSubcategoryItem) {
+            selectedSubcategoryItem.classList.remove("active");
+            selectedSubcategoryItem.removeAttribute("aria-current");
+        }
+    }
+</script>

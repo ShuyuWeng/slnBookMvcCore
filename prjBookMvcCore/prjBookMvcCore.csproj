@@ -1,0 +1,93 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Image\ART\**" />
+    <Compile Remove="Views\Artical\**" />
+    <Compile Remove="Views\NewFolder1\**" />
+    <Content Remove="Image\ART\**" />
+    <Content Remove="Views\Artical\**" />
+    <Content Remove="Views\NewFolder1\**" />
+    <EmbeddedResource Remove="Image\ART\**" />
+    <EmbeddedResource Remove="Views\Artical\**" />
+    <EmbeddedResource Remove="Views\NewFolder1\**" />
+    <None Remove="Image\ART\**" />
+    <None Remove="Views\Artical\**" />
+    <None Remove="Views\NewFolder1\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\ArticalController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\css\CBookView.cs" />
+    <Content Remove="wwwroot\css\site - 複製.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Image\demo-pic.jpg" />
+    <Content Include="Image\pic_Lever.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GoogleReCaptcha.V3" Version="1.3.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Core" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.16">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.13" />
+    <PackageReference Include="Moq" Version="4.18.4" />
+    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit.ConsoleRunner" Version="3.16.3" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.4.2" />
+    <PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\text\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Image\ArticalPicture\1.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\2.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\2022 年精選書單.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\Reset，結束與開始，全新的世界正在生成.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\中國傳統武術.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\伽利略書展.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\健康飲食與減重.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\多益英語考試學習.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\大腦科學書籍熱門人氣排行推薦.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\大自然與生物多樣性.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\張作錦《今文觀止》新書茶會.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\心理學與情感療癒.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\探索世界的不同面向.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\探索自然世界，了解生命奧秘.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\探索面對告別的良方.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\推薦人工智慧書單，讓你迅速學會與AI溝通.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\提升個人能力和思維方法.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\李崇義《冰山對話》新書分享會.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\橫空出世 ChatGPT 現象級AI新世代.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\登山露營技巧與料理指南.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\看懂晶片戰局勢 掌握新賽局關鍵.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\禪修與心靈成長.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\科技解密：深入探索各種機器運作原理.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\科普叢書書籍熱門人氣排行推薦.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\編織教學書籍推薦.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\自然探索與科普.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\變化中的世界  你不可不知的經濟大勢.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\財務自由與理財教育.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\透過圖解享受科學的樂趣.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\透過圖解，享受科學的樂趣.jpg" />
+    <None Include="wwwroot\Image\ArticalPicture\陳月卿《時時刻刻微養生》新書分享會（台北場）.jpg" />
+  </ItemGroup>
+
+</Project>

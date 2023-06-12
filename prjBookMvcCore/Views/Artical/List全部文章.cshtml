@@ -1,0 +1,48 @@
+﻿@model IEnumerable<prjBookMvcCore.Models.Artical>
+
+@{
+    ViewData["Title"] = "List全部文章";
+}
+<script>
+    $(document).ready
+        (
+
+        );
+</script>
+
+
+<h1>全部文章</h1>
+
+
+<table class="table table-hover align-middle">
+    <thead>
+        <tr>
+            <th>
+              序號
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ArticalTitle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ArticalDate)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int count = 0;
+            foreach (var item in Model) {
+                string path = item.ArticalTitle + ".jpg";
+                count++;
+                <tr href="~/Artical/Detail文章/@item.ArticalId">
+                <td>@count</td>
+                    <td>
+                        <a href="~/Artical/Detail文章/@item.ArticalId"> <img src="~/Image/ArticalPicture/@path" height="50" width="150" title="@item.ArticalTitle" /> </a><br>
+                    @Html.ActionLink(item.ArticalTitle, "Detail文章" , "Artical" ,new{id=item.ArticalId},new{}) 
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.ArticalDate)  </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

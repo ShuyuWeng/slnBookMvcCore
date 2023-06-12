@@ -1,0 +1,70 @@
+﻿@model IEnumerable<OrderDetail>
+@{
+    ViewData["Title"] = "訂單詳細清單";
+    BookShopContext db = new BookShopContext();
+}
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/prjBookMvcCore.styles.css" asp-append-version="true" />
+<title>訂單詳細清單</title>
+<div>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container">
+            <div class="align-items-start">
+                <p class="navbar-brand">讀本</p>
+            </div>
+        </div>
+    </nav>
+</div>
+<div class="container" style="margin-top:15px">
+    <table class="table table-hover">
+        <tr>
+            <th>序號</th>
+            <th>品項</th>
+            <th>數量</th>
+            <th>單價</th>
+            <th>書籍折扣</th>
+            <th>折扣後總價</th>
+        </tr>
+        @{
+            int count = 0;
+            foreach (var item in Model)
+            {
+                count++;
+                var orderDate = db.Orders.Find(item.OrderId).OrderDate;
+                var bookDiscount = item.Book.BookDiscountDetails.Where(x => x.BookDiscountStartDate < orderDate & x.BookDiscountEndDate > orderDate).Select(x => x.BookDiscount.BookDiscountName).FirstOrDefault();
+                var x = !String.IsNullOrEmpty(bookDiscount)?bookDiscount:"無折扣";
+                var price = item.UnitPrice * (item.Book.BookDiscountDetails.Where(x=>x.BookDiscountStartDate < DateTime.Now & x.BookDiscountEndDate > DateTime.Now).Select(x => x.BookDiscount.BookDiscountAmount).FirstOrDefault());
+                <tr>
+                    <td>
+                        @count
+                    </td>
+                    <td>
+                        @item.Book.BookTitle.Split("$")[0]
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Quantity) 本
+                    </td>
+                    <td>
+                        @Convert.ToInt32(@item.Book.UnitPrice) 元
+                    </td>
+                    <td>
+                        @x
+                    </td>
+                    <td>
+                        @Convert.ToInt32(@item.UnitPrice*item.Quantity)  元
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+    <div>
+        <button onclick="window.close()" class="btn btn-outline-secondary btn-sm">關閉</button>
+    </div>
+
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+

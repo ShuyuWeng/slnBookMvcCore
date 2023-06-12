@@ -1,0 +1,68 @@
+﻿@using prjBookMvcCore.Models
+@model MenuInformation
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        a:link, a:visited {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .zero {
+            margin: 0;
+            padding: 0;
+        }
+
+        .menu ul li { /*li水平顯示*/
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a class="linkaFormat" href="~/Home/Home">首頁</a></li>
+            <li class="breadcrumb-item active" aria-current="page">書籍</li>
+        </ol>
+    </nav>
+    <div class="container-fluid justify-content-center2" style="margin-top: 10px">
+        <div class="row">
+            @* 左邊功能欄 *@
+            <div class="col-2" style="position: relative;">
+                <div class="card" style="position: sticky; top: 20%;">
+                    @* 中文書分類 *@
+                    <div class="card-header">
+                        @{
+                            BookShopContext db = new BookShopContext();
+                            var s = db.Books.Where(c => c.LanguageId == 1).Select(c => c.BookId).ToList();
+                            int countAll = s.Count;
+                            <a asp-controller="Category" asp-action="分類頁面" asp-route-id="0">繁中(@countAll)</a>
+                        }
+                    </div>
+                    @foreach (var category in Model.categories)
+                    {
+                        @if (category.CategoryId > 14)
+                        {
+                            var q = db.CategoryDetails.Where(c => c.SubCategory.CategoryId == category.CategoryId).Select(c => c).ToList();
+                            int count = q.Count;
+                            <div class="row card-body border-1 btn-outline-secondary">
+                                <a asp-controller="Category" asp-action="分類頁面" asp-route-id="@category.CategoryId">@category.CategoryName (@count)</a>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+            @* Body *@
+            <div class="col-10 bg-light">
+                @RenderSection("test", required: false)
+                <section class="font14px">@RenderBody()</section>
+            </div>
+        </div>
+    </div>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

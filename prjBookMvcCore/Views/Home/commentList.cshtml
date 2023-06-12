@@ -1,0 +1,62 @@
+﻿@using prjBookMvcCore.Models
+@model CForHomePage
+
+@{
+    ViewBag.Title = "讀者好評";
+    Layout = "~/Views/Shared/_Layout_Comment.cshtml";
+}
+
+<body>
+
+    
+    <br />
+    <div class="container">
+        <div class="row">
+            @{
+                int countcommentTimeDate = 0;
+                foreach (var item in Model.commentTimeDate)
+                {
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-4 text-center mb-3">
+                                <a href="/Book/BookInformation/@item.book.BookId#comment">
+                                    <img height="150" src="~/Image/Book/@item.book.CoverPath" data-bs-toggle="tooltip" data-bs-placement="top" title="@item.book.BookTitle.Split("$")[0]" />
+                                </a>
+                            </div>
+                            <div class="col">
+                                <ul style="list-style:none; margin:0; padding:0;">
+                                    <li class="bookCaption mb-2">@item.book.BookTitle.Replace("$$"," ")</li>
+                                    <li>
+                                        評論等級：<span class="star star-s">
+                                            @for (int x = 0; x < item.comment.Stars; x++)
+                                            {
+                                                <img style="width:20px; height:auto" src="~/image/icons8-star.gif" />
+                                            }
+                                        </span>
+                                    </li>
+                                    <li>評論日期：@item.comment.CommentTime.ToString("yyyy-MM-dd")</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <p class="col twolines bookCaption" style="color:gray">
+                                @item.comment.CommentText
+                            </p>
+                        </div>
+                    </div>
+                    countcommentTimeDate++;
+                    if (countcommentTimeDate % 2 == 0)
+                    {
+                        <div class="row"></div>
+                        <hr />
+                        <br />
+                    }
+                }
+            }
+
+        </div>
+        <br /><br />
+
+    </div>
+
+</body>

@@ -1,0 +1,95 @@
+﻿@inject UserInforService _userInforService
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - prjBookMvcCore</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/prjBookMvcCore.styles.css" asp-append-version="true" />
+    <style>
+        div {
+            border: 1px solid #ff0000
+        }
+
+        #zero {
+            margin: 0;
+            padding: 0;
+        }
+
+        #menu ul li { /*li水平顯示*/
+            display: inline;
+        }
+
+      /*  footer {
+            margin-top: 20px;
+        }*/
+
+    </style>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container">
+            <div class="align-items-start">
+                <a href="~/Home/Home"><img src="~/Image/讀本logo.png" style="border-radius:5px; width:35px;padding-bottom:5px" />讀本</a>
+                @* @Html.ActionLink("讀本", "Home", "Home", new { area = "" }, new { @class = "fontsize24 navbar-brand" }) *@ @*須換圖*@
+            </div>
+            <div class="justify-content-end" id="menu">
+                <ul id="zero">
+                    <li><a role="button" class="btn btn-sm btn-outline-secondary mx-1" href="~/Member/Login">登入</a></li>
+                    <li><a role="button" class="btn btn-sm btn-outline-secondary mx-1" href="~/Member/Signin">註冊</a></li>
+                    <li><a role="button" class="btn btn-sm btn-outline-secondary mx-1" href="~/Member/MemberCenter">會員中心</a></li>
+                    <li><a role="button" class="btn btn-sm btn-outline-secondary mx-1" href="~/Order/ShoppingCart">購物車</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <br />
+    <div class="container body-content">
+        @* body *@
+        @RenderBody()
+    </div>
+
+
+    <div class="container body-content">
+        @* buttom *@
+        <hr />
+        <div class="container">
+            <div class="row">
+                <div class="col" style="text-align:center">
+                    <img src="~/Image/AD.png" alt="活動or優惠or廣告" width="100%" />
+                    廣告招商中
+                </div>
+                <div class="col" style="text-align:center">
+                    <img src="~/Image/AD.png" alt="活動or優惠or廣告" width="100%" />
+                    廣告招商中
+                </div>
+                <div class="col" style="text-align:center">
+                    <img src="~/Image/AD.png" alt="活動or優惠or廣告" width="100%" />
+                    廣告招商中
+                </div>
+            </div>
+        </div>
+
+        <br />
+        <hr />
+        <div>
+            <span style="margin-right:10px"><a href="#id">客服專區</a></span>
+            <span style="margin-right:10px"><a href="#id">客服專區</a></span>
+        </div>
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        </footer>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

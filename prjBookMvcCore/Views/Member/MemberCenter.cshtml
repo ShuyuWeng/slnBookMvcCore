@@ -1,0 +1,122 @@
+﻿@inject UserInforService user
+@model Member
+@{
+    ViewBag.Title = "會員中心首頁";
+    Layout = "~/Views/Shared/_Layout_Member.cshtml";
+    var time = DateTime.Now.Year;
+    var nextLevel = user._db.MemberLevels.Where(x => x.LevelId == (Model.LevelId + 1)).Select(x => x.LevelName).FirstOrDefault();
+    var nextAmount = user._db.MemberLevels.Where(x => x.LevelId == (Model.LevelId + 1)).Select(x => x.MinCost).FirstOrDefault();
+    var ex = nextAmount - Model.CostAmount;
+    var q = user._db.MessageMemberDetails.Where(x => x.MemberId == user.UserId && x.ReadStatu == 0).Count();
+    var q1 = user._db.OrderDiscountDetails.Where(x => x.MemberId == user.UserId && x.IsOrderDiscountUse == "N" && x.OrderDiscountEndDate > DateTime.Now).Count();
+    var q2 = user._db.Orders.Where(x => x.MemberId == user.UserId).Count();
+    var q3 = user._db.MessageMemberDetails.Where(x => x.MemberId == user.UserId).Count();
+}
+
+<style>
+    .card:hover {
+        box-shadow: 0 0 5px #ddd;
+        transform: scale(1.05);
+    }
+
+    .card {
+        transition: all 0.5s ease-in-out; /* 增加過渡時間至 0.5 秒 */
+    }
+
+    .liR:hover {
+        box-shadow: 0 0 5px #ddd;
+        transform: scale(1.05);
+    }
+
+    .liR {
+        transition: all 0.5s ease-in-out; /* 增加過渡時間至 0.5 秒 */
+    }
+
+    div {
+        border: none
+    }
+</style>
+
+<div class="container-fluid">
+    <div id="inforCards" style="margin-top:15px">
+        <div class="row">
+            <div class="col-4">
+                <div class="card" style="height:100%">
+                    <a class="card-header small" style="display:block;width:100%;" href="~/Member/alretProflie">
+                        <h5 class="display-6" id="memberLevel"><img src="~/Image/@(Model.Level.LevelName).png" style="width:50%" />@Model.Level.LevelName</h5>
+                        <p>等級期限 @time 年 8月 31日 止<br />尚差 @ex 元即可升等為 <br />@nextLevel</p>
+                    </a>
+                    <ul class="list-group list-group-flush">
+                        <a href="~/Promotions/Promotions會員">
+                        <li class="liR list-group-item small">了解詳細會員分級 </li></a>
+                        <a href="~/Member/alretPassword">
+                        <li class="liR list-group-item small"> 修改密碼</li> </a>
+                        <a href="~/Member/myCollect">
+                        <li class="liR list-group-item small"> 收藏清單 </li></a>
+                        <a href="~/Member/myComment">
+                        <li class="liR list-group-item small"> 我的評論 </li></a>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col">
+                        <div class="card">
+                            <a class="card-body" style="display:block;width:100%;" href="~/Member/myMessage">
+                                <p class="card-text">
+                                    您有
+                                </p><span class="display-6" id="messageCount">@q </span>封訊息未讀 / 共有 @q3 封
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <a class="card-body" style="display:block;width:100%;" href="~/Member/myOrders">
+                                <p class="card-text">
+                                    您已購買過
+                                </p><span class="display-6" id="orders">@q2  </span>次書籍 / 檢視訂單
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:15px">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-text">
+                                    您的回饋金餘額：
+                                </p><span class="display-6" id="points">@Model.Points  </span>點
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <a class="card-body" style="display:block;width:100%;" href="~/Member/myCoupons">
+                                <p class="card-text">
+                                    您的Coupon尚有：
+                                </p><span class="display-6" id="coupons">@q1  </span>張 / 檢視Coupons
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        const messageCount = document.querySelector('#messageCount');
+        const orders = document.querySelector('#orders');
+        const coupons = document.querySelector('#coupons');
+
+        window.onload = async () => {
+            const response = await fetch('@Url.Content("~/Member/gerMemberInfor")?id=' + @user.UserId);
+            const datas = await response.json();
+            console.log(datas);
+            messageCount.innerHTML = `${datas.user_msCount}  `
+            orders.innerHTML = `${datas.user_odCount}  `
+            coupons.innerHTML = `${datas.user_coupons}  `
+        };
+    </script>
+}
